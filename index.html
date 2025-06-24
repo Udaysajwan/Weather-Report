@@ -1,159 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weather Report</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body {
-      background: linear-gradient(135deg, #fbbf24 0%, #fff7ed 100%);
-      min-height: 100vh;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #1e293b;
-    }
-    .container {
-      max-width: 400px;
-      margin: 60px auto;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 30px rgba(255, 183, 77, 0.15);
-      padding: 32px 24px;
-    }
-    h1 {
-      text-align: center;
-      color: #fb923c;
-      margin-bottom: 24px;
-    }
-    .weather-icon {
-      display: flex;
-      justify-content: center;
-      font-size: 4rem;
-      color: #fbbf24;
-      margin-bottom: 16px;
-    }
-    .weather-info {
-      text-align: center;
-    }
-    .temp {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #fb923c;
-    }
-    .desc {
-      font-size: 1.2rem;
-      color: #f59e42;
-      margin-bottom: 8px;
-    }
-    .details {
-      margin-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      color: #b45309;
-      font-size: 1rem;
-    }
-    .search-box {
-      display: flex;
-      margin-bottom: 20px;
-    }
-    .search-box input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid #ffd580;
-      border-radius: 8px 0 0 8px;
-      font-size: 1rem;
-    }
-    .search-box button {
-      background: #fb923c;
-      color: #fff;
-      border: none;
-      padding: 0 18px;
-      border-radius: 0 8px 8px 0;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .search-box button:hover {
-      background: #f59e42;
-    }
-    .error {
-      color: #ef4444;
-      text-align: center;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Weather Forecast</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+            padding: 32px 24px 24px 24px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #333;
+        }
+        .search {
+            display: flex;
+            margin-bottom: 24px;
+        }
+        .search input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px 0 0 8px;
+            font-size: 16px;
+        }
+        .search button {
+            padding: 12px 20px;
+            border: none;
+            background: #74ebd5;
+            color: #333;
+            font-weight: bold;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .search button:hover {
+            background: #ACB6E5;
+            transform: scale(1.07);
+        }
+        .weather {
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+        }
+        .weather-icon {
+            width: 80px;
+            height: 80px;
+        }
+        .temp {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        .desc {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .details {
+            display: flex;
+            justify-content: space-around;
+            margin: 16px 0 24px 0;
+        }
+        .details div {
+            font-size: 16px;
+            color: #444;
+        }
+        .forecast {
+            margin-top: 24px;
+            opacity: 0;
+            animation: fadeIn 0.8s 0.2s forwards;
+        }
+        .forecast-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+        }
+        .forecast-cards {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .forecast-card {
+            background: #f7f7f7;
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            flex: 1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: slideUp 0.6s forwards;
+        }
+        .forecast-card:nth-child(1) { animation-delay: 0.2s; }
+        .forecast-card:nth-child(2) { animation-delay: 0.3s; }
+        .forecast-card:nth-child(3) { animation-delay: 0.4s; }
+        .forecast-card:nth-child(4) { animation-delay: 0.5s; }
+        .forecast-card:nth-child(5) { animation-delay: 0.6s; }
+        .forecast-card img {
+            width: 40px;
+            height: 40px;
+        }
+        .error {
+            color: #d32f2f;
+            text-align: center;
+            margin-top: 12px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 4px 12px 4px;
+            }
+            .forecast-cards {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1><i class="fas fa-cloud-sun"></i> Weather Report</h1>
-    <form class="search-box" id="weatherForm">
-      <input type="text" id="cityInput" placeholder="Enter city name" required>
-      <button type="submit"><i class="fas fa-search"></i></button>
-    </form>
-    <div id="weatherResult"></div>
-    <div class="error" id="errorMsg"></div>
-  </div>
+    <div class="container">
+        <h1>Weather Forecast</h1>
+        <form class="search" id="searchForm">
+            <input type="text" id="cityInput" placeholder="Enter city name" required />
+            <button type="submit">Search</button>
+        </form>
+        <div id="weatherSection"></div>
+        <div id="forecastSection"></div>
+        <div class="error" id="errorMsg"></div>
+    </div>
+    <script>
+        const apiKey = 'ae1b1ff134718d84f5ac455080a02837'; // <-- Replace with your OpenWeatherMap API key
 
-  <script>
-    const apiKey = 'ae1b1ff134718d84f5ac455080a02837'; // Replace with your own API key if needed
-    const weatherForm = document.getElementById('weatherForm');
-    const cityInput = document.getElementById('cityInput');
-    const weatherResult = document.getElementById('weatherResult');
-    const errorMsg = document.getElementById('errorMsg');
+        const searchForm = document.getElementById('searchForm');
+        const cityInput = document.getElementById('cityInput');
+        const weatherSection = document.getElementById('weatherSection');
+        const forecastSection = document.getElementById('forecastSection');
+        const errorMsg = document.getElementById('errorMsg');
 
-    weatherForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const city = cityInput.value.trim();
-      if (!city) return;
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = cityInput.value.trim();
+            if (!city) return;
+            errorMsg.textContent = '';
+            weatherSection.innerHTML = '';
+            forecastSection.innerHTML = '';
+            try {
+                const weatherData = await fetchWeather(city);
+                const forecastData = await fetchForecast(city);
+                renderWeather(weatherData);
+                renderForecast(forecastData);
+            } catch (err) {
+                errorMsg.textContent = err.message || 'Failed to fetch weather data.';
+            }
+        });
 
-      weatherResult.innerHTML = '';
-      errorMsg.textContent = '';
-
-      const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
-
-      console.log("Requesting weather for:", city);
-      console.log("API URL:", apiURL);
-
-      try {
-        const res = await fetch(apiURL);
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.message || 'Unknown error');
+        async function fetchWeather(city) {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('City not found.');
+            return res.json();
         }
 
-        renderWeather(data);
-      } catch (err) {
-        errorMsg.textContent = `❌ ${err.message}`;
-        console.error("Error fetching weather:", err.message);
-      }
-    });
+        async function fetchForecast(city) {
+            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Forecast not found.');
+            return res.json();
+        }
 
-    function renderWeather(data) {
-      const icon = data.weather[0].icon;
-      const desc = data.weather[0].description;
-      const temp = Math.round(data.main.temp);
-      const humidity = data.main.humidity;
-      const wind = data.wind.speed;
-      const city = data.name;
-      const country = data.sys.country;
+        function renderWeather(data) {
+            const icon = data.weather[0].icon;
+            const desc = data.weather[0].description;
+            const temp = Math.round(data.main.temp);
+            const humidity = data.main.humidity;
+            const wind = data.wind.speed;
+            const city = data.name;
+            const country = data.sys.country;
+            weatherSection.innerHTML = `
+                <div class="weather fade-animate">
+                    <img class="weather-icon" src="https://openweathermap.org/img/wn/${icon}@4x.png" alt="${desc}" />
+                    <div class="temp">${temp}&deg;C</div>
+                    <div class="desc">${desc.charAt(0).toUpperCase() + desc.slice(1)}</div>
+                    <div>${city}, ${country}</div>
+                    <div class="details">
+                        <div>💧 Humidity: ${humidity}%</div>
+                        <div>💨 Wind: ${wind} m/s</div>
+                    </div>
+                </div>
+            `;
+        }
 
-      weatherResult.innerHTML = `
-        <div class="weather-icon">
-          <img src="https://openweathermap.org/img/wn/${icon}@4x.png" alt="${desc}">
-        </div>
-        <div class="weather-info">
-          <div class="temp">${temp}&deg;C</div>
-          <div class="desc">${desc.charAt(0).toUpperCase() + desc.slice(1)}</div>
-          <div>${city}, ${country}</div>
-          <div class="details">
-            <div><i class="fas fa-tint"></i> Humidity: ${humidity}%</div>
-            <div><i class="fas fa-wind"></i> Wind: ${wind} m/s</div>
-          </div>
-        </div>
-      `;
-    }
-  </script>
+        function renderForecast(data) {
+            // Group forecast by day, pick the 12:00 entry for each day
+            const days = {};
+            data.list.forEach(item => {
+                const date = item.dt_txt.split(' ')[0];
+                const hour = item.dt_txt.split(' ')[1];
+                if (hour === '12:00:00') {
+                    days[date] = item;
+                }
+            });
+            const cards = Object.values(days).slice(0, 5).map((item, idx) => {
+                const date = new Date(item.dt * 1000);
+                const day = date.toLocaleDateString(undefined, { weekday: 'short' });
+                const icon = item.weather[0].icon;
+                const temp = Math.round(item.main.temp);
+                const desc = item.weather[0].main;
+                return `
+                    <div class="forecast-card">
+                        <div>${day}</div>
+                        <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${desc}" />
+                        <div>${temp}&deg;C</div>
+                        <div style="font-size:13px;color:#666;">${desc}</div>
+                    </div>
+                `;
+            }).join('');
+            forecastSection.innerHTML = `
+                <div class="forecast fade-animate">
+                    <div class="forecast-title">5-Day Forecast</div>
+                    <div class="forecast-cards">${cards}</div>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>
