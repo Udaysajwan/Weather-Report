@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather Report</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fbbf24 0%, #fff7ed 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(255, 183, 77, 0.15);
+      padding: 32px 24px;
+    }
+    h1 {
+      text-align: center;
+      color: #fb923c;
+      margin-bottom: 24px;
+    }
+    .weather-icon {
+      display: flex;
+      justify-content: center;
+      font-size: 4rem;
+      color: #fbbf24;
+      margin-bottom: 16px;
+    }
+    .weather-info {
+      text-align: center;
+    }
+    .temp {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fb923c;
+    }
+    .desc {
+      font-size: 1.2rem;
+      color: #f59e42;
+      margin-bottom: 8px;
+    }
+    .details {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      color: #b45309;
+      font-size: 1rem;
+    }
+    .search-box {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #ffd580;
+      border-radius: 8px 0 0 8px;
+      font-size: 1rem;
+    }
+    .search-box button {
+      background: #fb923c;
+      color: #fff;
+      border: none;
+      padding: 0 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-box button:hover {
+      background: #f59e42;
+    }
+    .error {
+      color: #ef4444;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-cloud-sun"></i> Weather Report</h1>
+    <form class="search-box" id="weatherForm">
+      <input type="text" id="cityInput" placeholder="Enter city name" required>
+      <button type="submit"><i class="fas fa-search"></i></button>
+    </form>
+    <div id="weatherResult"></div>
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <script>
+    const apiKey = 'ae1b1ff134718d84f5ac455080a02837'; // Replace with your own API key if needed
+    const weatherForm = document.getElementById('weatherForm');
+    const cityInput = document.getElementById('cityInput');
+    const weatherResult = document.getElementById('weatherResult');
+    const errorMsg = document.getElementById('errorMsg');
+
+    weatherForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const city = cityInput.value.trim();
+      if (!city) return;
+
+      weatherResult.innerHTML = '';
+      errorMsg.textContent = '';
+
+      const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${apiKey}&units=metric`;
+
+      console.log("Requesting weather for:", city);
+      console.log("API URL:", apiURL);
+
+      try {
+        const res = await fetch(apiURL);
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Unknown error');
+        }
+
+        renderWeather(data);
+      } catch (err) {
+        errorMsg.textContent = `❌ ${err.message}`;
+        console.error("Error fetching weather:", err.message);
+      }
+    });
+
+    function renderWeather(data) {
+      const icon = data.weather[0].icon;
+      const desc = data.weather[0].description;
+      const temp = Math.round(data.main.temp);
+      const humidity = data.main.humidity;
+      const wind = data.wind.speed;
+      const city = data.name;
+      const country = data.sys.country;
+
+      weatherResult.innerHTML = `
+        <div class="weather-icon">
+          <img src="https://openweathermap.org/img/wn/${icon}@4x.png" alt="${desc}">
+        </div>
+        <div class="weather-info">
+          <div class="temp">${temp}&deg;C</div>
+          <div class="desc">${desc.charAt(0).toUpperCase() + desc.slice(1)}</div>
+          <div>${city}, ${country}</div>
+          <div class="details">
+            <div><i class="fas fa-tint"></i> Humidity: ${humidity}%</div>
+            <div><i class="fas fa-wind"></i> Wind: ${wind} m/s</div>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
